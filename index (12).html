@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Финансовое планирование и анализ - демонстрационный кейс</title>
+<style>
+:root{
+  --bg:#f6f7fb;
+  --panel:#ffffff;
+  --panel2:#f9f7ff;
+  --text:#17131f;
+  --muted:#716a7d;
+  --line:#e4def2;
+  --accent:#7c3aed;
+  --accent2:#a78bfa;
+  --cyan:#6d28d9;
+  --danger:#d9485f;
+  --warn:#b7791f;
+  --ok:#6d28d9;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at 18% 0%,rgba(124,58,237,.07),transparent 28%),
+    radial-gradient(circle at 90% 10%,rgba(167,139,250,.06),transparent 24%),
+    linear-gradient(180deg,#fbfbfd,#f4f5f9 70%);
+  color:var(--text);
+  font:14px/1.45 Inter,Segoe UI,Arial,sans-serif;
+  min-height:100vh;
+}
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background-image:
+    linear-gradient(rgba(124,58,237,.018) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(124,58,237,.018) 1px,transparent 1px);
+  background-size:34px 34px;
+}
+.wrap{max-width:1500px;margin:0 auto;padding:26px;position:relative}
+.hero{
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  align-items:flex-start;
+  background:linear-gradient(180deg,#ffffff,#fbfaff);
+  border:1px solid #e3ddf1;
+  border-radius:18px;
+  padding:22px;
+  box-shadow:0 12px 35px rgba(54,39,88,.07);
+}
+h1{margin:0 0 8px;font-size:30px;letter-spacing:-.02em}
+.sub{max-width:900px;color:var(--muted)}
+.badge{
+  border:1px solid #d7c9f7;
+  padding:8px 12px;
+  border-radius:999px;
+  color:#6d28d9;
+  background:#faf7ff;
+  white-space:nowrap;
+}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}
+.tab{
+  border:1px solid #ddd6eb;
+  background:#ffffff;
+  color:#6f687a;
+  padding:10px 14px;
+  border-radius:10px;
+  cursor:pointer;
+  transition:.2s ease;
+  box-shadow:0 3px 10px rgba(55,45,80,.025);
+}
+.tab:hover{
+  border-color:#bca7ef;
+  color:#4c1d95;
+  box-shadow:0 6px 16px rgba(124,58,237,.08);
+}
+.tab.active{
+  background:linear-gradient(135deg,#7c3aed,#a78bfa);
+  color:#ffffff;
+  border-color:#8b5cf6;
+  box-shadow:0 8px 20px rgba(124,58,237,.22);
+  font-weight:700;
+}
+.section{display:none}.section.active{display:block}
+.grid{display:grid;gap:14px}
+.kpis{grid-template-columns:repeat(6,1fr)}
+.two{grid-template-columns:1.35fr 1fr}
+.three{grid-template-columns:repeat(3,1fr)}
+.card{
+  background:linear-gradient(180deg,#ffffff,#fcfbff);
+  border:1px solid #e6e0ef;
+  border-radius:16px;
+  padding:16px;
+  box-shadow:0 10px 30px rgba(48,38,67,.055);
+}
+.card:hover{
+  border-color:#d2c2f0;
+  box-shadow:0 14px 36px rgba(67,48,112,.08);
+}
+.label{
+  font-size:11px;
+  color:#7c7388;
+  text-transform:uppercase;
+  letter-spacing:.07em;
+}
+.value{font-size:24px;font-weight:800;margin-top:6px;color:#1f1728}
+.delta{font-size:12px;margin-top:5px}
+.pos{color:#6d28d9}
+.neg{color:#d9485f}
+.warn{color:#a16207}
+h2{font-size:17px;margin:0 0 12px;color:#211827}
+h3{
+  font-size:13px;
+  margin:0 0 10px;
+  color:#6b5f77;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+table{width:100%;border-collapse:collapse}
+th,td{
+  padding:10px 8px;
+  border-bottom:1px solid #eee9f4;
+  text-align:right;
+}
+th:first-child,td:first-child{text-align:left}
+th{
+  font-size:11px;
+  color:#81778d;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  background:#faf8fe;
+}
+tbody tr:hover td{background:#faf7ff}
+.row{display:flex;justify-content:space-between;gap:12px;align-items:center;margin:10px 0}
+.bar{
+  height:8px;
+  background:#efeaf7;
+  border-radius:999px;
+  overflow:hidden;
+  border:1px solid #e5dcf4;
+}
+.fill{
+  height:100%;
+  background:linear-gradient(90deg,#6d28d9,#7c3aed,#a78bfa);
+}
+.chart{
+  display:flex;
+  align-items:flex-end;
+  gap:8px;
+  height:220px;
+  padding-top:16px;
+  border-bottom:1px solid #ece6f3;
+}
+.col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px}
+.col .b{
+  width:68%;
+  border-radius:7px 7px 2px 2px;
+  min-height:4px;
+  background:linear-gradient(180deg,#a78bfa,#7c3aed 60%,#5b21b6);
+  box-shadow:0 5px 12px rgba(124,58,237,.14);
+}
+.col span{font-size:11px;color:var(--muted)}
+.callout{
+  border:1px solid #ddd0f6;
+  border-left:3px solid var(--accent);
+  border-radius:10px;
+  padding:13px 14px;
+  background:linear-gradient(90deg,#faf6ff,#ffffff);
+  color:#4a4252;
+}
+.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.control{
+  background:#ffffff;
+  border:1px solid #e3dcf0;
+  border-radius:14px;
+  padding:14px;
+  box-shadow:0 5px 15px rgba(55,45,80,.03);
+}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.footer{margin-top:18px;color:#8a8294;font-size:12px}
+::selection{background:#ddd0ff;color:#211827}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:#f3f1f7}
+::-webkit-scrollbar-thumb{background:#cbbbea;border-radius:10px}
+::-webkit-scrollbar-thumb:hover{background:#a88ce0}
+@media(max-width:1100px){
+  .kpis{grid-template-columns:repeat(3,1fr)}
+  .two,.three,.controls{grid-template-columns:1fr}
+}
+@media(max-width:650px){
+  .kpis{grid-template-columns:1fr 1fr}
+  .hero{flex-direction:column}
+  .wrap{padding:14px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div>
+      <h1>Финансовое планирование и анализ</h1>
+      <div class="sub">Универсальный демонстрационный кейс: прогнозирование, план-факт анализ, драйверная модель, сценарное моделирование, юнит-экономика и управленческая отчетность. Все данные синтетические.</div>
+    </div>
+    <div class="badge">Демо-кейс · синтетические данные</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-id="overview">Обзор</button>
+    <button class="tab" data-id="pnl">P&L</button>
+    <button class="tab" data-id="variance">План-факт</button>
+    <button class="tab" data-id="drivers">Драйверы бизнеса</button>
+    <button class="tab" data-id="scenario">Сценарии</button>
+    <button class="tab" data-id="unit">Юнит-экономика</button>
+    <button class="tab" data-id="rolling">Прогноз на 12 месяцев</button>
+  </div>
+
+  <section id="overview" class="section active">
+    <div class="grid kpis">
+      <div class="card"><div class="label">Выручка с начала года</div><div class="value">268,4 млн ₽</div><div class="delta pos">+12,8% к плану</div></div>
+      <div class="card"><div class="label">Валовая прибыль</div><div class="value">102,6 млн ₽</div><div class="delta pos">маржа 38,2%</div></div>
+      <div class="card"><div class="label">Операционные расходы</div><div class="value">184,6 млн ₽</div><div class="delta neg">+7,8% к бюджету</div></div>
+      <div class="card"><div class="label">Операционная прибыль</div><div class="value">83,8 млн ₽</div><div class="delta pos">+25,4% к плану</div></div>
+      <div class="card"><div class="label">Активные клиенты</div><div class="value">1 248</div><div class="delta pos">+6,4% с начала года</div></div>
+      <div class="card"><div class="label">Прогноз до конца года</div><div class="value">382,6 млн ₽</div><div class="delta warn">требует контроля расходов</div></div>
+    </div>
+    <div class="grid two" style="margin-top:14px">
+      <div class="card"><h2>Динамика выручки</h2><div class="chart" id="overviewChart"></div></div>
+      <div class="card">
+        <h2>Ключевые выводы для менеджмента</h2>
+        <div class="row"><span>Рост клиентской базы</span><b>+6,4%</b></div>
+        <div class="bar"><div class="fill" style="width:62%"></div></div>
+        <div class="row"><span>Рост среднего дохода</span><b>+4,8%</b></div>
+        <div class="bar"><div class="fill" style="width:48%"></div></div>
+        <div class="row"><span>Рост операционных расходов</span><b>+7,8%</b></div>
+        <div class="bar"><div class="fill" style="width:78%"></div></div>
+        <div class="callout" style="margin-top:16px">Рост выручки опережает план, но расходы растут быстрее ожидаемого. Основной управленческий вопрос: сохраняется ли качество роста после учета CAC, маржи и стоимости обслуживания клиентов.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pnl" class="section">
+    <div class="card">
+      <h2>P&L</h2>
+      <table>
+        <thead><tr><th>Статья</th><th>План</th><th>Факт</th><th>Отклонение</th><th>Отклонение, %</th></tr></thead>
+        <tbody>
+          <tr><td>Выручка</td><td>238,0</td><td>268,4</td><td class="pos">+30,4</td><td class="pos">+12,8%</td></tr>
+          <tr><td>Переменные затраты</td><td>145,0</td><td>165,8</td><td class="neg">+20,8</td><td class="neg">+14,3%</td></tr>
+          <tr><td><b>Валовая прибыль</b></td><td><b>93,0</b></td><td><b>102,6</b></td><td class="pos"><b>+9,6</b></td><td class="pos"><b>+10,3%</b></td></tr>
+          <tr><td>Фонд оплаты труда</td><td>91,0</td><td>98,4</td><td class="neg">+7,4</td><td class="neg">+8,1%</td></tr>
+          <tr><td>Продажи и маркетинг</td><td>24,0</td><td>27,8</td><td class="neg">+3,8</td><td class="neg">+15,8%</td></tr>
+          <tr><td>Технологии и инфраструктура</td><td>18,5</td><td>20,3</td><td class="neg">+1,8</td><td class="neg">+9,7%</td></tr>
+          <tr><td>Прочие операционные расходы</td><td>37,7</td><td>38,1</td><td class="neg">+0,4</td><td class="neg">+1,1%</td></tr>
+          <tr><td><b>Операционная прибыль</b></td><td><b>66,8</b></td><td><b>83,8</b></td><td class="pos"><b>+17,0</b></td><td class="pos"><b>+25,4%</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="variance" class="section">
+    <div class="grid three">
+      <div class="card"><h3>Эффект объема</h3><div class="value">+14,2 млн ₽</div><div class="delta pos">рост количества клиентов и операций</div></div>
+      <div class="card"><h3>Ценовой эффект</h3><div class="value">+9,1 млн ₽</div><div class="delta pos">рост среднего дохода на клиента</div></div>
+      <div class="card"><h3>Эффект структуры</h3><div class="value">+7,1 млн ₽</div><div class="delta warn">изменение клиентского микса</div></div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <h2>План-факт с объяснением причин</h2>
+      <table>
+        <thead><tr><th>Показатель</th><th>План</th><th>Факт</th><th>Причина</th><th>Управленческое действие</th></tr></thead>
+        <tbody>
+          <tr><td>Выручка</td><td>238,0</td><td>268,4</td><td style="text-align:left">больше активных клиентов и выше средний доход</td><td style="text-align:left">проверить устойчивость роста по сегментам</td></tr>
+          <tr><td>Продажи и маркетинг</td><td>24,0</td><td>27,8</td><td style="text-align:left">увеличение стоимости привлечения</td><td style="text-align:left">пересмотреть каналы с низкой окупаемостью</td></tr>
+          <tr><td>ФОТ</td><td>91,0</td><td>98,4</td><td style="text-align:left">рост команды быстрее плана</td><td style="text-align:left">сопоставить рост ФОТ с производительностью</td></tr>
+          <tr><td>Технологии</td><td>18,5</td><td>20,3</td><td style="text-align:left">новые лицензии и инфраструктура</td><td style="text-align:left">оценить загрузку и стоимость на пользователя</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="drivers" class="section">
+    <div class="grid two">
+      <div class="card">
+        <h2>Драйверная модель</h2>
+        <table>
+          <thead><tr><th>Драйвер</th><th>Текущий уровень</th><th>Влияние</th></tr></thead>
+          <tbody>
+            <tr><td>Активные клиенты</td><td>1 248</td><td style="text-align:left">базовый объем выручки</td></tr>
+            <tr><td>Средний доход на клиента</td><td>215 тыс ₽</td><td style="text-align:left">основной ценовой драйвер</td></tr>
+            <tr><td>Частота операций</td><td>8,4 / мес.</td><td style="text-align:left">влияет на выручку и транзакционные затраты</td></tr>
+            <tr><td>Валовая маржа</td><td>38,2%</td><td style="text-align:left">качество выручки</td></tr>
+            <tr><td>CAC</td><td>126 тыс ₽</td><td style="text-align:left">стоимость роста</td></tr>
+            <tr><td>Отток</td><td>3,4%</td><td style="text-align:left">влияет на LTV и прогноз клиентской базы</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h2>Чувствительность прибыли</h2>
+        <div class="row"><span>+10% активных клиентов</span><b class="pos">+18,6 млн ₽</b></div>
+        <div class="row"><span>+5% среднего дохода</span><b class="pos">+11,4 млн ₽</b></div>
+        <div class="row"><span>+2 п.п. валовой маржи</span><b class="pos">+5,4 млн ₽</b></div>
+        <div class="row"><span>+10% CAC</span><b class="neg">-3,1 млн ₽</b></div>
+        <div class="row"><span>+1 п.п. оттока</span><b class="neg">-7,8 млн ₽</b></div>
+        <div class="callout">Драйверная модель позволяет обновлять прогноз не вручную по каждой строке P&L, а через ключевые операционные предпосылки бизнеса.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="scenario" class="section">
+    <div class="controls">
+      <div class="control"><div class="row"><span>Рост клиентской базы</span><b id="clientsVal">12%</b></div><input id="clients" type="range" min="-10" max="30" value="12"></div>
+      <div class="control"><div class="row"><span>Изменение среднего дохода</span><b id="arpuVal">5%</b></div><input id="arpu" type="range" min="-10" max="20" value="5"></div>
+      <div class="control"><div class="row"><span>Рост операционных расходов</span><b id="costVal">7%</b></div><input id="cost" type="range" min="0" max="20" value="7"></div>
+    </div>
+    <div class="grid three" style="margin-top:14px">
+      <div class="card"><div class="label">Прогноз выручки</div><div id="scenarioRevenue" class="value">315,6 млн ₽</div></div>
+      <div class="card"><div class="label">Прогноз расходов</div><div id="scenarioCosts" class="value">197,5 млн ₽</div></div>
+      <div class="card"><div class="label">Прогноз прибыли</div><div id="scenarioProfit" class="value">118,1 млн ₽</div></div>
+    </div>
+    <div class="card" style="margin-top:14px"><h2>Сценарный вывод</h2><div id="scenarioText" class="callout"></div></div>
+  </section>
+
+  <section id="unit" class="section">
+    <div class="grid kpis">
+      <div class="card"><div class="label">Средний доход на клиента</div><div class="value">215 тыс ₽</div><div class="delta pos">+4,8% к плану</div></div>
+      <div class="card"><div class="label">Валовая маржа на клиента</div><div class="value">82 тыс ₽</div><div class="delta pos">38,1%</div></div>
+      <div class="card"><div class="label">CAC</div><div class="value">126 тыс ₽</div><div class="delta pos">-8,7% г/г</div></div>
+      <div class="card"><div class="label">LTV</div><div class="value">612 тыс ₽</div><div class="delta pos">LTV/CAC = 4,9x</div></div>
+      <div class="card"><div class="label">Окупаемость CAC</div><div class="value">5,2 мес.</div><div class="delta pos">-0,8 мес. к плану</div></div>
+      <div class="card"><div class="label">Отток</div><div class="value">3,4%</div><div class="delta warn">+0,3 п.п. к плану</div></div>
+    </div>
+    <div class="grid two" style="margin-top:14px">
+      <div class="card">
+        <h2>Юнит-экономика по сегментам</h2>
+        <table>
+          <thead><tr><th>Сегмент</th><th>Доход / клиент</th><th>Маржа</th><th>CAC</th><th>LTV/CAC</th></tr></thead>
+          <tbody>
+            <tr><td>Корпоративные клиенты</td><td>420 тыс ₽</td><td>42%</td><td>210 тыс ₽</td><td class="pos">5,6x</td></tr>
+            <tr><td>Средний бизнес</td><td>240 тыс ₽</td><td>39%</td><td>132 тыс ₽</td><td class="pos">4,8x</td></tr>
+            <tr><td>Малый бизнес</td><td>118 тыс ₽</td><td>31%</td><td>74 тыс ₽</td><td class="warn">3,7x</td></tr>
+            <tr><td>Другие сегменты</td><td>96 тыс ₽</td><td>27%</td><td>69 тыс ₽</td><td class="warn">3,2x</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h2>Выводы по юнит-экономике</h2>
+        <div class="row"><span>Лучший LTV/CAC</span><b>5,6x</b></div>
+        <div class="row"><span>Лучший сегмент по марже</span><b>Корпоративные клиенты</b></div>
+        <div class="row"><span>Главный риск</span><b>Рост оттока</b></div>
+        <div class="row"><span>Зона внимания</span><b>Малый бизнес</b></div>
+        <div class="callout" style="margin-top:16px">Рост клиентской базы нельзя оценивать только по выручке. Финансовая модель должна одновременно учитывать CAC, LTV, маржу, срок окупаемости и удержание клиентов.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="rolling" class="section">
+    <div class="grid three">
+      <div class="card"><div class="label">Выручка за 12 месяцев</div><div id="rollRevenue" class="value">382,6 млн ₽</div></div>
+      <div class="card"><div class="label">Операционные расходы</div><div id="rollCosts" class="value">249,8 млн ₽</div></div>
+      <div class="card"><div class="label">Операционная прибыль</div><div id="rollProfit" class="value">132,8 млн ₽</div></div>
+    </div>
+    <div class="grid two" style="margin-top:14px">
+      <div class="card">
+        <h2>Помесячный прогноз выручки</h2>
+        <div class="chart" id="rollingChart"></div>
+      </div>
+      <div class="card">
+        <h2>Прогноз по месяцам</h2>
+        <table id="rollingTable">
+          <thead><tr><th>Месяц</th><th>Выручка</th><th>Расходы</th><th>Прибыль</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <h2>Логика прогноза</h2>
+      <div class="callout">Прогноз пересчитывается через ключевые драйверы: динамику клиентской базы, средний доход на клиента и темп роста расходов. Такой подход позволяет быстро обновлять прогноз при изменении бизнес-предпосылок.</div>
+    </div>
+  </section>
+
+  <div class="footer">Все показатели и названия сегментов синтетические. Кейс создан для демонстрации подхода к финансовому планированию и анализу.</div>
+</div>
+
+<script>
+document.querySelectorAll('.tab').forEach(btn=>btn.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(btn.dataset.id).classList.add('active');
+});
+
+const ov=[22.4,24.1,25.7,27.6,28.8,30.2,32.0,36.1,41.5];
+const overviewChart=document.getElementById('overviewChart');
+ov.forEach((v,i)=>{
+  const c=document.createElement('div');c.className='col';
+  const b=document.createElement('div');b.className='b';b.style.height=(v/45*180)+'px';b.title=v+' млн ₽';
+  const s=document.createElement('span');s.textContent=['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен'][i];
+  c.appendChild(b);c.appendChild(s);overviewChart.appendChild(c);
+});
+
+const clients=document.getElementById('clients'),arpu=document.getElementById('arpu'),cost=document.getElementById('cost');
+function recalcScenario(){
+  const cg=+clients.value/100, ag=+arpu.value/100, costg=+cost.value/100;
+  clientsVal.textContent=clients.value+'%'; arpuVal.textContent=arpu.value+'%'; costVal.textContent=cost.value+'%';
+  const revenue=268.4*(1+cg)*(1+ag);
+  const costs=184.6*(1+costg);
+  const profit=revenue-costs;
+  scenarioRevenue.textContent=revenue.toFixed(1).replace('.',',')+' млн ₽';
+  scenarioCosts.textContent=costs.toFixed(1).replace('.',',')+' млн ₽';
+  scenarioProfit.textContent=profit.toFixed(1).replace('.',',')+' млн ₽';
+  let t='Сценарий: ';
+  if(cg>=.2)t+='ускоренный рост клиентской базы становится главным источником роста выручки. ';
+  else if(cg<0)t+='снижение клиентской базы создает риск для выручки. ';
+  else t+='клиентская база растет умеренно. ';
+  if(ag>=.1)t+='Рост среднего дохода существенно усиливает прибыльность. ';
+  if(costg>=.12)t+='Рост расходов выше 12% заметно снижает эффект от роста выручки.';
+  else t+='Рост расходов остается контролируемым.';
+  scenarioText.textContent=t;
+}
+[clients,arpu,cost].forEach(x=>x.addEventListener('input',recalcScenario));recalcScenario();
+
+function buildRolling(){
+  const tbody=document.querySelector('#rollingTable tbody');
+  const chart=document.getElementById('rollingChart');
+  tbody.innerHTML='';chart.innerHTML='';
+  const months=['Окт','Ноя','Дек','Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен'];
+  const revenues=[],costs=[];
+  for(let i=0;i<12;i++){
+    const r=28.6*(1+0.018*i);
+    const c=19.2*(1+0.012*i);
+    revenues.push(r);costs.push(c);
+  }
+  const max=Math.max(...revenues);
+  let totalR=0,totalC=0;
+  revenues.forEach((r,i)=>{
+    totalR+=r;totalC+=costs[i];
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${months[i]}</td><td>${r.toFixed(1).replace('.',',')}</td><td>${costs[i].toFixed(1).replace('.',',')}</td><td>${(r-costs[i]).toFixed(1).replace('.',',')}</td>`;
+    tbody.appendChild(tr);
+    const col=document.createElement('div');col.className='col';
+    const b=document.createElement('div');b.className='b';b.style.height=(r/max*170)+'px';b.title=r.toFixed(1)+' млн ₽';
+    const s=document.createElement('span');s.textContent=months[i];
+    col.appendChild(b);col.appendChild(s);chart.appendChild(col);
+  });
+  rollRevenue.textContent=totalR.toFixed(1).replace('.',',')+' млн ₽';
+  rollCosts.textContent=totalC.toFixed(1).replace('.',',')+' млн ₽';
+  rollProfit.textContent=(totalR-totalC).toFixed(1).replace('.',',')+' млн ₽';
+}
+buildRolling();
+</script>
+</body>
+</html>
